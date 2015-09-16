@@ -18,12 +18,15 @@ class CreateModelMixin(object):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        new_serializer = self.perform_create(serializer)
+        if new_serializer is not None:
+            serializer = new_serializer
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save()
+        return serializer
 
     def get_success_headers(self, data):
         try:
