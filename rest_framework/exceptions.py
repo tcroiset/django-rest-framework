@@ -137,6 +137,10 @@ class ValidationError(APIException):
         self.detail = _get_error_details(detail, code)
 
 
+class ValidationConflictError(ValidationError):
+    status_code = status.HTTP_409_CONFLICT
+
+
 class ParseError(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = _('Malformed request.')
