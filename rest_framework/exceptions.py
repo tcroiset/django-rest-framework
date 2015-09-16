@@ -79,6 +79,10 @@ class ValidationError(APIException):
         return six.text_type(self.detail)
 
 
+class ValidationConflictError(ValidationError):
+    status_code = status.HTTP_409_CONFLICT
+
+
 class ParseError(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = _('Malformed request.')

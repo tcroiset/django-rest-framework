@@ -23,6 +23,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.compat import DurationField as ModelDurationField
 from rest_framework.compat import JSONField as ModelJSONField
 from rest_framework.compat import postgres_fields, unicode_to_repr
+from rest_framework.exceptions import ValidationConflictError
 from rest_framework.utils import model_meta
 from rest_framework.utils.field_mapping import (
     ClassLookupDict, get_field_kwargs, get_nested_relation_kwargs,
@@ -218,7 +219,15 @@ class BaseSerializer(Field):
                 self._errors = {}
 
         if self._errors and raise_exception:
-            raise ValidationError(self.errors)
+            only_unique_errors = True
+            for field_name, field_errors in self._errors.iteritems():
+                for error in field_errors:
+                    if error != 'This field must be unique.' and not error.startswith('conflict_'):
+                        only_unique_errors = False
+            if only_unique_errors:
+                raise ValidationConflictError(self.errors)
+            else:
+                raise ValidationError(self.errors)
 
         return not bool(self._errors)
 
