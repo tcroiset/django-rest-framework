@@ -28,7 +28,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.compat import postgres_fields, unicode_to_repr
-from rest_framework.exceptions import ErrorDetail, ValidationError, ValidationConflictError
+from rest_framework.exceptions import ErrorDetail, ValidationError, ValidationConflictError, FeatureDisabledError
 from rest_framework.fields import get_error_detail, set_value
 from rest_framework.settings import api_settings
 from rest_framework.utils import html, model_meta, representation
@@ -244,6 +244,8 @@ class BaseSerializer(Field):
             only_unique_errors = True
             for field_name, field_errors in self._errors.iteritems():
                 for error in field_errors:
+                    if error == 'feature_disabled':
+                        raise FeatureDisabledError(self._errors)
                     if error != 'This field must be unique.' and not error.startswith('conflict_'):
                         only_unique_errors = False
             if only_unique_errors:
