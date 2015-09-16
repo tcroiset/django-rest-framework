@@ -1254,6 +1254,9 @@ class ChoiceField(Field):
         self.choice_strings_to_values = {
             six.text_type(key): key for key in self.choices.keys()
         }
+        self.choice_display_values_to_values = {
+            six.text_type(value): key for key, value in self.choices.iteritems()
+        }
 
         self.allow_blank = kwargs.pop('allow_blank', False)
 
@@ -1266,7 +1269,10 @@ class ChoiceField(Field):
         try:
             return self.choice_strings_to_values[six.text_type(data)]
         except KeyError:
-            self.fail('invalid_choice', input=data)
+            try:
+                return self.choice_display_values_to_values[six.text_type(data)]
+            except KeyError:
+                self.fail('invalid_choice', input=data)
 
     def to_representation(self, value):
         if value in ('', None):
