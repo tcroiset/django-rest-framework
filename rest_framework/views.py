@@ -2,6 +2,7 @@
 Provides an APIView class that is the base of all views in REST framework.
 """
 from __future__ import unicode_literals
+import logging
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -21,6 +22,9 @@ from rest_framework.response import Response
 from rest_framework.schemas import DefaultSchema
 from rest_framework.settings import api_settings
 from rest_framework.utils import formatting
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_view_name(view_cls, suffix=None):
@@ -83,6 +87,7 @@ def exception_handler(exc, context):
             data = {'detail': exc.detail}
 
         set_rollback()
+        logger.info('%s', data)
         return Response(data, status=exc.status_code, headers=headers)
 
     elif isinstance(exc, Http404):
