@@ -321,6 +321,8 @@ class Request(object):
             if user_auth_tuple is not None:
                 self._authenticator = authenticator
                 self.user, self.auth = user_auth_tuple
+                if self.user is not None and hasattr(self.user, 'post_authentication'):
+                    self.user.post_authentication(self)
                 return
 
         self._not_authenticated()
