@@ -224,7 +224,7 @@ class BaseSerializer(Field):
                 for error in field_errors:
                     if error == 'feature_disabled':
                         raise FeatureDisabledError(self._errors)
-                    if error != 'This field must be unique.' and not error.startswith('conflict_') and not 'already exists' in error:
+                    if error != 'This field must be unique.' and not error.startswith('conflict_') and not 'already exists' in error and not 'must make a unique set' in error:
                         only_unique_errors = False
             if only_unique_errors:
                 raise ValidationConflictError(self.errors)
