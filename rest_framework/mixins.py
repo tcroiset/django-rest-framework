@@ -6,9 +6,14 @@ which allows mixin classes to be composed in interesting ways.
 """
 from __future__ import unicode_literals
 
+import logging
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
+
+
+logger = logging.getLogger(__name__)
 
 
 class CreateModelMixin(object):
@@ -16,6 +21,7 @@ class CreateModelMixin(object):
     Create a model instance.
     """
     def create(self, request, *args, **kwargs):
+        logger.info('Request data: %s', request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_serializer = self.perform_create(serializer)
@@ -66,6 +72,7 @@ class UpdateModelMixin(object):
     Update a model instance.
     """
     def update(self, request, *args, **kwargs):
+        logger.info('Request data: %s', request.data)
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
