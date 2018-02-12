@@ -242,7 +242,7 @@ class BaseSerializer(Field):
 
         if self._errors and raise_exception:
             only_unique_errors = True
-            for field_name, field_errors in self._errors.iteritems():
+            for field_name, field_errors in six.iteritems(self._errors):
                 for error in field_errors:
                     if error == 'feature_disabled':
                         raise FeatureDisabledError(self._errors)
