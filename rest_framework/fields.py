@@ -1334,7 +1334,7 @@ class ChoiceField(Field):
             six.text_type(key): key for key in self.choices.keys()
         }
         self.choice_display_values_to_values = {
-            six.text_type(value): key for key, value in self.choices.iteritems()
+            six.text_type(value): key for key, value in six.iteritems(self.choices)
         }
 
         self.allow_blank = kwargs.pop('allow_blank', False)
